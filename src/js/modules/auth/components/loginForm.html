@@ -1,0 +1,20 @@
+<div class="loginform" ng-class="$ctrl.formClasses()">
+  <form name="loginform" ng-submit="loginform.$valid && $ctrl.login()">
+    <div class="loginform__row loginform__username-wrapper">
+      <label for="username">Username:</label>
+      <input type="text" name="username" ng-disabled="$ctrl.inputDisabled()" required="true" ng-model="$ctrl.username">
+    </div>
+    <div class="loginform__row loginform__password-wrapper">
+      <label for="username">Password:</label>
+      <input type="text" name="password" ng-disabled="$ctrl.inputDisabled()" required="true" ng-model="$ctrl.password">
+    </div>
+    <div class="loginform__row">
+      <span class="loginform__col"></span>
+        <button ng-disabled="$ctrl.submitDisabled()"
+                class="loginform__col c-button u-full u-text-center c-button__green"
+                type="submit">
+          Login
+        </button>
+    </div>
+  </form>
+</div>

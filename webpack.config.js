@@ -16,7 +16,7 @@ module.exports = {
   },
   module : {
     rules: [
-      // { test: /\.html$/, loader: 'raw-loader' }
+      { test: /\.html$/, loader: 'raw-loader' }
       // {
       //   test: require.resolve("./js-src/ps.js"),
       //   use: 'exports-loader?PS'
@@ -46,9 +46,9 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      // chartjs: '../node_modules/chartjs/dist/Chart.js',
-      // jsmediatags : './jsmediatags.js',
-      // ps : './ps.js',
+      Models: path.resolve(__dirname, './src/js/models/'),
+      Modules: path.resolve(__dirname, './src/js/modules/'),
+      Templates: path.resolve(__dirname, './src/templates/')
     }
   },
   devtool : "#source-map"

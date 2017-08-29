@@ -1,6 +1,6 @@
 import angular from 'angular';
 
-angular.module('testing', [])
+export default angular.module('appTesting', [])
 .controller('MyController', ['$scope', function($scope) {
   $scope.data = {
     name : "hello"

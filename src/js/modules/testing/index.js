@@ -1,1 +1,2 @@
-import './testing.js';
+import i from './testing.js';
+export default i;

@@ -3,7 +3,7 @@ require('angular-mocks');
 
 describe('testing', function () {
 
-  beforeEach(angular.mock.module('testing'));
+  beforeEach(angular.mock.module('appTesting'));
 
   var $controller;
 
