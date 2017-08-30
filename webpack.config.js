@@ -3,8 +3,7 @@ const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-
-module.exports = {
+const frontend = {
   entry: './src/js/main.js',
   target: 'web',
   output: {
@@ -16,15 +15,10 @@ module.exports = {
   },
   module : {
     rules: [
-      { test: /\.html$/, loader: 'raw-loader' }
-      // {
-      //   test: require.resolve("./js-src/ps.js"),
-      //   use: 'exports-loader?PS'
-      // },
-      // {
-      //   test: require.resolve("./js-src/ps.js"),
-      //   use: 'imports-loader?jsmediatags'
-      // }
+      {
+        test: /\.html$/,
+        loader: 'raw-loader'
+      }
     ]
   },
   plugins: [
@@ -34,15 +28,6 @@ module.exports = {
         to : '../dist/index.html'
       }
     ])
-    // new webpack.DefinePlugin({
-    //   'process.env': {
-    //     NODE_ENV: '"production"'
-    //   }
-    // })
-    // ,
-    // new UglifyJSPlugin({
-    //   compress: true
-    // })
   ],
   resolve: {
     alias: {
@@ -52,4 +37,38 @@ module.exports = {
     }
   },
   devtool : "#source-map"
+}
+
+const backend = {
+  entry: {
+    dbsetup : './api/dbsetup.js'
+  },
+  target: 'node',
+  output: {
+    filename: 'dist/[name].js',
+    path: path.resolve(__dirname, 'api'),
+    sourceMapFilename: 'dist/[name].js.map',
+  },
+  module : {
+    // noParse : [],
+    // loaders : [
+    //   { test: /node_modules\/rc\/index.js$/, use: ['shebang-loader'] }
+    // ]
+  },
+  plugins: [
+    new webpack.BannerPlugin({
+      banner:'require("source-map-support").install();',
+      raw: true,
+      entryOnly: false
+    })
+  ],
+  resolve: {
+    alias: {}
+  },
+  resolveLoader: {
+    modules: ['node_modules', 'loaders'],
+  },
+  devtool : "#source-map"
 };
+
+module.exports = [backend];
