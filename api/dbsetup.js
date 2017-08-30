@@ -5,80 +5,96 @@ Promise.promisifyAll(require("mysql/lib/Connection").prototype);
 Promise.promisifyAll(require("mysql/lib/Pool").prototype);
 
 export function createNewUser(connection, username, password) {
-  const c = connection;
-  let saltRounds = 10;
-
-
   return new Promise(function(success, fail) {
-    bcrypt.hash(password, saltRounds, function(err, hash) {
-      c.queryAsync(
-        'INSERT INTO user SET ?',
-        {
-          username : username,
-          password : hash
-        }
-      ).then(success, fail);
-    });
+    const c = connection;
+    let saltRounds = 10;
+    
+    bcrypt.genSalt(saltRounds, function(err, salt) {
+      if (err) fail(err);
+      bcrypt.hash(password, salt, null, function(err, hash) {
+        if (err) fail(err);
+        c.queryAsync(
+          'INSERT INTO user SET ?',
+          {
+            username : username,
+            password : hash
+          }
+        ).then(success).error(fail);
+      });
+    })
+    
   });
 }
 
-
+// Promise
 export function connect() {
-  // CredentialObject
-  let credentials = require('./dbcredentials.js').default;
-  let connection = mysql.createConnection(credentials);
+  return new Promise(function(resolve, reject) {
+    // CredentialObject
+    let credentials = require('./dbcredentials.js').default;
+    var connection = mysql.createConnection(credentials);
+    
+    connection.connect(function(err) {
+      if (err) reject(err);
+      connection.app = {
+        useDB : function() {
+          connection.query('USE ' + dbname);
+        }
+      }
 
-	connection.connect();
-
-	connection.app = {
-		useDB : function() {
-			connection.query('USE ' + dbname);
-		}
-	}
-	return connection;
+      resolve(connection);
+    });   
+  });	
 }
 
 export function schema(connection, dbuser, dbname) {
   const c = connection;
   const s = {};
 
+  // Promise
 	s.user = function() {
-		c.query(`
+		return c.queryAsync(`
 			GRANT ALL ON ` + dbname + `.* TO "` + dbuser + `"@"localhost"
 		`)
 	}
 
+  // Promise
 	s.createdb = function() {
-		c.query(`
+		return c.queryAsync(`
 			CREATE DATABASE IF NOT EXISTS ` + dbname + `
 			CHARACTER SET utf8
 			COLLATE utf8_unicode_ci
 		`)
 	}
 
+  // Promise
 	s.reset = function() {
-		c.query(`
+		return c.queryAsync(`
 			DROP DATABASE IF EXISTS ` + dbname + `
 		`)
 	}
-
+  
+  // Promise
 	s.createtables = function() {
-    c.query('use ' + dbname);
-
-		c.query(`
-			CREATE TABLE IF NOT EXISTS user
-			(
-				id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-        username TEXT NOT NULL,
-				password TEXT NOT NULL,
-				PRIMARY KEY (id)
-			)
-		`)
+    return Promise.all([
+      c.queryAsync('use ' + dbname),
+      c.query(`
+        CREATE TABLE IF NOT EXISTS user
+        (
+          id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+          username VARCHAR(50) NOT NULL UNIQUE,
+          password VARCHAR(50) NOT NULL,
+          PRIMARY KEY (id)
+        )
+      `)
+    ]);
 	}
 
+  // Promise
 	s.setup = function() {
-		s.createdb();
-		s.createtables();
+		return Promise.all([
+      s.createdb(),
+      s.createtables()
+    ]);
   }
 
 	return s;
@@ -88,10 +104,26 @@ export function schema(connection, dbuser, dbname) {
 export function setup() {
   let dbname = "angularapp";
   let dbconfig = require('./dbcredentials.js').default;
-  let s = schema(connect(), dbconfig.user, dbname);
-	s.reset();
-	s.setup();
-	console.log('Done.');
+  return connect()
+    .then(function(connection) {
+      let s = schema(connection, dbconfig.user, dbname);
+      
+      return Promise.all([
+        s.reset(),
+        s.setup(),
+        createNewUser(connection, 'demo', 'demo')
+      ])
+      .then(function() {
+        console.log('Done');
+      })
+      .finally(function() {
+        connection.end();
+      })
+    })
 }
 
-setup();
+setup().catch(function(err) {
+  console.error(err);
+})
+
+

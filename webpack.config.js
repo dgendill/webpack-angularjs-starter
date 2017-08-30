@@ -71,4 +71,4 @@ const backend = {
   devtool : "#source-map"
 };
 
-module.exports = [backend];
+module.exports = [backend, frontend];
