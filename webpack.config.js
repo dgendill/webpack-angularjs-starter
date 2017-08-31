@@ -41,13 +41,14 @@ const frontend = {
 
 const backend = {
   entry: {
-    dbsetup : './api/dbsetup.js'
+    dbsetup : './src-api/dbsetup.js',
+    api : './src-api/api.js'
   },
   target: 'node',
   output: {
-    filename: 'dist/[name].js',
-    path: path.resolve(__dirname, 'api'),
-    sourceMapFilename: 'dist/[name].js.map',
+    filename: '../dist-api/[name].js',
+    path: path.resolve(__dirname, 'src-api'),
+    sourceMapFilename: '../dist-api/[name].js.map',
   },
   module : {
     // noParse : [],
@@ -63,7 +64,11 @@ const backend = {
     })
   ],
   resolve: {
-    alias: {}
+    alias: {
+      Models : path.resolve(__dirname, './src-api/models/'),
+      DB : path.resolve(__dirname, './src-api/'),
+      Util : path.resolve(__dirname, './src-api/util/')
+    }
   },
   resolveLoader: {
     modules: ['node_modules', 'loaders'],

@@ -1,4 +1,5 @@
 /dist
 /node_modules
-/api/dbcredentials.js
-/api/dist
+dbcredentials.js
+/dist
+/dist-api
