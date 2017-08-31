@@ -136,6 +136,7 @@ export function schema(connection, dbuser, dbname) {
         CREATE TABLE IF NOT EXISTS session
         (
           id VARCHAR(35) NOT NULL PRIMARY KEY,
+          created TIMESTAMP,
           user_id INT UNSIGNED NOT NULL,
           CONSTRAINT \`fk_session_user\`
             FOREIGN KEY (user_id) REFERENCES user (id)
