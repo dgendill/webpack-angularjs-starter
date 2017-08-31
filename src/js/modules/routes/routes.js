@@ -5,7 +5,7 @@ export default angular
   .module('appRoutes', ['ui.router', 'appAuth'])
   .config(["$stateProvider", "AuthProvider", function($stateProvider, AuthProvider) {
 
-    // AuthProvider.setBaseUrl('https://dgendill.com/app');
+    AuthProvider.setBaseUrl('http://localhost:3001');
 
     
     $stateProvider.state({
@@ -49,6 +49,8 @@ export default angular
       if (Auth.session) {
         // return false;
         return transition.router.stateService.target("root.home");
+      } else {
+        return true;
       }
       // do stuff on every transition such as change page title [global scope here]
     });

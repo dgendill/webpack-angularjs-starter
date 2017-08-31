@@ -1,5 +1,6 @@
 import angular from 'angular';
 import FormStateMachine from 'Models/FormStateMachine';
+import Rx from 'rxjs/Rx';
 
 export default function(m) {
   let template = require('./loginForm.html');
@@ -12,6 +13,11 @@ export default function(m) {
 
       this.state = FormStateMachine();
 
+      // var source = Rx.BehaviorSubject(this.state);
+      // source.subscribe(function(x) {
+      //   console.log('Next: %s', x);
+      // });
+
       this.login = function() {
         this.state.enterLoading('Logging In...');
 
@@ -21,8 +27,9 @@ export default function(m) {
             that.state.enterSuccess('Successfully Logged In').hide();
             $state.go('root.home');
           }, function(err) {
-            that.state.enterFailure(err.message);
-            console.log("Error");
+            console.log(err);
+            that.state.enterFailure(err.data.message);
+            $scope.$apply();
           });        
       }
 

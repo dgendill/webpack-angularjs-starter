@@ -67,7 +67,9 @@ const backend = {
     alias: {
       Models : path.resolve(__dirname, './src-api/models/'),
       DB : path.resolve(__dirname, './src-api/'),
-      Util : path.resolve(__dirname, './src-api/util/')
+      Util : path.resolve(__dirname, './src-api/util/'),
+      Frontend : path.resolve(__dirname, './src/js/'),
+      FrontendModels : path.resolve(__dirname, './src/js/models/')
     }
   },
   resolveLoader: {

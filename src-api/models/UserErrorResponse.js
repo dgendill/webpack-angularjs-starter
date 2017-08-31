@@ -1,9 +1,10 @@
-function UserErrorResponse(message) {
+function UserErrorResponse(userMessage, debugMessage) {
   return {
-    'message' : message
+    'message' : userMessage,
+    'debug' : debugMessage
   }
 }
 
-export default function (message) {
-  return new UserErrorResponse(message);
+export default function (message, debugMessage) {
+  return new UserErrorResponse(message, debugMessage);
 }

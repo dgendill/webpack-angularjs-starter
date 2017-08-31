@@ -25,9 +25,11 @@
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
+    "cors": "^2.8.4",
     "express": "^4.15.4",
     "lodash": "^4.17.4",
     "mysql": "^2.14.1",
+    "rxjs": "^5.4.3",
     "webpack": "^3.5.5"
   },
   "devDependencies": {

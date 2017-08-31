@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const Promise = require('bluebird');
 const _ = require('lodash');
 const dbname = "angularapp";
+import UserSessionModel from 'FrontendModels/UserSession';
 
 Promise.promisifyAll(require("mysql/lib/Connection").prototype);
 Promise.promisifyAll(require("mysql/lib/Pool").prototype);
@@ -28,6 +29,7 @@ export function createNewUser(connection, username, password) {
 
 export function User(connection) {
   return {
+    // Promise Error User
     validatePassword : function(username, password) {
       return this.getByUsername(username)
       .then(function(user) {
@@ -40,7 +42,7 @@ export function User(connection) {
             console.log(err, res);
             if (err) reject(err);
             if (res == true) {
-              resolve(res);
+              resolve(user);
             } else {
               reject(new Error('Invalid username or password.'));
             }
@@ -53,18 +55,68 @@ export function User(connection) {
         'SELECT * FROM user WHERE ?',
         { username : username }
       ).then(_.first);
+    },
+    getById : function(id) {
+      return connection.queryAsync(
+        'SELECT * FROM user WHERE ?',
+        { id : id }
+      ).then(_.first);
+    }
+
+  }
+}
+
+export function UserSession(connection) {
+  return {
+    // Promise Error UserSession
+    getBySessionId : function(id) {
+      return Session(connection)
+      .get(id)
+      .then(function(session) {
+        if (session) {
+          return User(connection)
+          .getById(session.user_id)
+          .then(function(user) {
+            return UserSessionModel(Object.assign(user, {
+              token : session.id
+            }));
+          })
+        } else {
+          throw new Error('Session could not be found.')
+        }
+      })
     }
   }
 }
 
 export function Session(connection) {
   return {
-    create : function(userid, sessionid) {
+    getByUserId : function(userid) {
+      return connection.queryAsync(
+        'SELECT * FROM session WHERE ?',
+        { userid : userid }
+      );
+    },
+    get : function(sessionid) {
+      return connection.queryAsync(
+        'SELECT * FROM session WHERE ?',
+        { id : sessionid }
+      ).then(_.first);
+    },
+    delete : function(sessionid) {
+	    return db.queryAsync(
+        'DELETE FROM session WHERE ?',
+        { id : sessionid }
+      );
+    },
+    // { id : sessionid, user_id : userid, ip : ipaddress }
+    create : function(data) {
       return connection.queryAsync(
 			  'INSERT INTO session SET ?',
         {
-          id : sessionid,
-          user_id : userid    
+          id : data.id,
+          user_id : data.user_id,
+          ip : data.ip    
         }
 		  )
     }
@@ -135,8 +187,9 @@ export function schema(connection, dbuser, dbname) {
       c.query(`
         CREATE TABLE IF NOT EXISTS session
         (
-          id VARCHAR(35) NOT NULL PRIMARY KEY,
+          id VARCHAR(64) NOT NULL PRIMARY KEY,
           created TIMESTAMP,
+          ip VARCHAR(45),
           user_id INT UNSIGNED NOT NULL,
           CONSTRAINT \`fk_session_user\`
             FOREIGN KEY (user_id) REFERENCES user (id)

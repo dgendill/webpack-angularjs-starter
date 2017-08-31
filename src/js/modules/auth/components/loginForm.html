@@ -10,11 +10,15 @@
     </div>
     <div class="loginform__row">
       <span class="loginform__col"></span>
-        <button ng-disabled="$ctrl.submitDisabled()"
-                class="loginform__col c-button u-full u-text-center c-button__green"
-                type="submit">
-          Login
-        </button>
+      <button ng-disabled="$ctrl.submitDisabled()"
+              class="loginform__col c-button u-full u-text-center c-button__green"
+              type="submit">
+        Login
+      </button>
+      <div>
+        {{$ctrl.state.message}}
+      </div>
+
     </div>
   </form>
 </div>

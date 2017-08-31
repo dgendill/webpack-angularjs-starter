@@ -8,39 +8,53 @@ const COOKIE_KEY = "Auth";
 let m = angular.module('appAuth', ['ngCookies'])
 
 m.provider('Auth', [function() {
-  var baseUrl = "";
+  var baseUrl = window.location.origin;
+  const that = this;
+
+  const sessionResource = function() {
+    return baseUrl + "/session";
+  }
 
   this.setBaseUrl = function(url) {
     baseUrl = url;
   }
 
-  function Auth($timeout, $cookies) {
+  let deps = ["$timeout", "$cookies", "$http"]
+  function Auth($timeout, $cookies, $http) {
 
+    var that = this;
     // String -> String -> Promise AuthError UserSession
     this.login = function(username, password) {
       return new Promise(function(success, fail) {
         if (password.trim() == "") {
           fail(AuthError.NoPassword)
         } else {
-          $timeout(function() {
-            var session = UserSession.createMock();
-            $cookies.put(COOKIE_KEY, session.token);
-            success(session);
-          }, 2000);
+          $http({
+            method:"POST",
+            url: sessionResource(),
+            data: {
+              username : username,
+              password : password
+            }
+          }).then(function(response) {
+            $cookies.put(COOKIE_KEY, response.data.response.token);
+            success(UserSession(response.data.response));
+          }, fail);   
         }        
       });
     }
 
+    // Promise AuthError UserSession
     this.checkAndCacheSession = function() {
-      var that = this;
       return new Promise(function(success, fail) {
         if (that.session) {
           success(that.session);
         } else {
-          that.checkSession().then(function(session) {
+          that.checkSession()
+          .then(function(session) {
             that.session = session;
             success(that.session);
-          });
+          }, fail);
         }
       });  
     }
@@ -50,9 +64,15 @@ m.provider('Auth', [function() {
       return new Promise(function(success, fail) {
         let token = $cookies.get(COOKIE_KEY);
         if (token) {
-          $timeout(function() {
-            success(UserSession.createMock()); 
-          }, 2000);
+          $http({
+            url : sessionResource(),
+            method: 'POST',
+            data: {
+              token : token
+            }
+          }).then(function(response) {
+            success(UserSession(response.data)); 
+          }, fail)
         } else {
           fail(AuthError.NoCookie);
         }        
@@ -62,7 +82,7 @@ m.provider('Auth', [function() {
   }
 
   this.$get = function($injector) {
-    return $injector.instantiate(Auth, ["$timeout", "$cookies"]);
+    return $injector.instantiate(Auth, deps);
   }
 
 }])
