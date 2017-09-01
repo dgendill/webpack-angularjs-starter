@@ -3,10 +3,28 @@ import 'Modules/auth';
 
 export default angular
   .module('appRoutes', ['ui.router', 'appAuth'])
-  .config(["$stateProvider", "AuthProvider", function($stateProvider, AuthProvider) {
+  .config(["$stateProvider", "AuthProvider", "$httpProvider", "$provide", function($stateProvider, AuthProvider, $httpProvider, $provide) {
 
     AuthProvider.setBaseUrl('http://localhost:3001');
 
+    // register the interceptor as a service
+    $provide.factory('httpErrorInterceptor', function($q) {
+      return {
+        // optional method
+      'responseError': function(rejection) {
+          if (rejection.status == -1 || rejection.data == null) {
+            rejection.data = {
+              message : "Oops, something unexpected went wrong.",
+              debug : rejection.config
+            }
+          }
+          console.log(rejection);
+          return $q.reject(rejection);
+        }
+      };
+    });
+
+    $httpProvider.interceptors.push('httpErrorInterceptor');
     
     $stateProvider.state({
       name: 'root',
@@ -37,7 +55,7 @@ export default angular
     $stateProvider.state({
       name: 'root.login',
       url: '/login',
-      template: "<login-form></login-form>"
+      template: require('Templates/login.html')
     });
 
   }])

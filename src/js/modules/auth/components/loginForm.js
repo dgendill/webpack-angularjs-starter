@@ -6,7 +6,7 @@ export default function(m) {
   let template = require('./loginForm.html');
   return m.component('loginForm', {
     template : template,
-    controller : function($scope, Auth, $state) {
+    controller : function($scope, Auth, $state, $window) {
       var that = this;
       this.username = "";
       this.password = "";
@@ -20,6 +20,8 @@ export default function(m) {
 
       this.login = function() {
         this.state.enterLoading('Logging In...');
+        var now = Date.now();
+        var perceive = 800;
 
         Auth
           .login(this.username, this.password)
@@ -27,9 +29,16 @@ export default function(m) {
             that.state.enterSuccess('Successfully Logged In').hide();
             $state.go('root.home');
           }, function(err) {
-            console.log(err);
-            that.state.enterFailure(err.data.message);
-            $scope.$apply();
+            
+            var time = now - Date.now();
+            if (time < perceive) {
+              $window.setTimeout(function() {
+                that.state.enterFailure(err.data.message);
+                $scope.$apply();
+              }, perceive - time);
+            }
+            
+            
           });        
       }
 

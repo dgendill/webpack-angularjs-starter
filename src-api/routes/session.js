@@ -23,7 +23,6 @@ let r = express.Router();
 
 r.post('/', function(req, res) {
   var body = req.body;
-  console.log(req);
   
   if (body.token) {
     Database.connect()

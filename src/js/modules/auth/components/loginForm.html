@@ -1,24 +1,33 @@
-<div class="loginform" ng-class="$ctrl.formClasses()">
+<div class="app-login-form" ng-class="$ctrl.formClasses()">
   <form name="loginform" ng-submit="loginform.$valid && $ctrl.login()">
-    <div class="loginform__row loginform__username-wrapper">
-      <label for="username">Username:</label>
-      <input type="text" name="username" ng-disabled="$ctrl.inputDisabled()" required="true" ng-model="$ctrl.username">
-    </div>
-    <div class="loginform__row loginform__password-wrapper">
-      <label for="username">Password:</label>
-      <input type="text" name="password" ng-disabled="$ctrl.inputDisabled()" required="true" ng-model="$ctrl.password">
-    </div>
-    <div class="loginform__row">
-      <span class="loginform__col"></span>
-      <button ng-disabled="$ctrl.submitDisabled()"
-              class="loginform__col c-button u-full u-text-center c-button__green"
-              type="submit">
-        Login
-      </button>
-      <div>
-        {{$ctrl.state.message}}
+    <div class="app-login-form__row app-login-form__username-wrapper">
+      <div class="app-login-form__col">
+        <label for="username">Username:</label>
       </div>
-
+      <div class="app-login-form__col">
+        <input type="text" name="username" ng-disabled="$ctrl.inputDisabled()" required="true" ng-model="$ctrl.username">
+      </div>
+    </div>
+    <div class="app-login-form__row app-login-form__password-wrapper">
+      <div class="app-login-form__col">
+        <label for="username">Password:</label>
+      </div>
+      <div class="app-login-form__col">
+        <input type="text" name="password" ng-disabled="$ctrl.inputDisabled()" required="true" ng-model="$ctrl.password">
+      </div>
+    </div>
+    <div class="app-login-form__row">
+      <div class="app-login-form__col"></div>
+      <div class="app-login-form__col u-ptop5">
+        <button ng-disabled="$ctrl.submitDisabled()"
+                class="app-button u-full u-text-center app-button--green"
+                type="submit">
+          Login
+        </button>
+      </div>
     </div>
   </form>
+  <div class="app-login-form__info" ng-class="$ctrl.state.classes()" ng-if="$ctrl.state.visible">
+    {{$ctrl.state.message}}
+  </div>
 </div>

@@ -33,13 +33,8 @@ export function User(connection) {
     validatePassword : function(username, password) {
       return this.getByUsername(username)
       .then(function(user) {
-        
-        console.log("P", password)
-        console.log("U", user);
-
         return new Promise(function(resolve, reject) {
           bcrypt.compare(password, user.password, function(err, res) {
-            console.log(err, res);
             if (err) reject(err);
             if (res == true) {
               resolve(user);
@@ -222,9 +217,6 @@ export function setup() {
         s.setup(),
         createNewUser(connection, 'demo', 'demo')
       ])
-      .then(function() {
-        console.log('Done');
-      })
       .finally(function() {
         connection.end();
       })

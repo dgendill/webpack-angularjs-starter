@@ -52,6 +52,13 @@ FormStateMachine.prototype.isSuccess = function() {
 FormStateMachine.prototype.isFailure = function() {
   return is.bind(this)(FAILURE);
 }
+FormStateMachine.prototype.classes = function() {
+  return {
+    'state-loading' : this.isLoading(),
+    'state-success' : this.isSuccess(),
+    'state-failure' : this.isFailure()
+  }
+}
 
 
 export default FormStateMachine;
