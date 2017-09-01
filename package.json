@@ -5,8 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "parallelshell 'npm run devfast' 'npm run test'",
-    "devfast": "parallelshell 'npm run compile -- --watch' 'npm run server' 'npm run api' 'npm run scss'",
+    "dev": "parallelshell 'npm run compile -- --watch' 'npm run server' 'npm run api' 'npm run scss'",
     "server": "http-server dist",
     "api": "cd dist-api && nodemon api.js",
     "scss": "node-sass -w src/scss/main.scss dist/css/main.css",
@@ -37,6 +36,7 @@
   "devDependencies": {
     "angular-mocks": "^1.6.6",
     "browser-sync": "^2.18.13",
+    "chai": "^4.1.2",
     "copy-webpack-plugin": "^4.0.1",
     "extract-text-webpack-plugin": "^3.0.0",
     "http-server": "^0.10.0",

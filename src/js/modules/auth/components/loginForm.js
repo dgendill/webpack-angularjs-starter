@@ -6,7 +6,7 @@ export default function(m) {
   let template = require('./loginForm.html');
   return m.component('loginForm', {
     template : template,
-    controller : function($scope, Auth, $state, $window) {
+    controller : function($scope, Auth, $state, $window, $q) {
       var that = this;
       this.username = "";
       this.password = "";
@@ -23,11 +23,12 @@ export default function(m) {
         var now = Date.now();
         var perceive = 800;
 
-        Auth
+        return Auth
           .login(this.username, this.password)
           .then(function(session) {
             that.state.enterSuccess('Successfully Logged In').hide();
             $state.go('root.home');
+            return session;
           }, function(err) {
             
             var time = now - Date.now();
@@ -38,7 +39,9 @@ export default function(m) {
               }, perceive - time);
             }
             
+            throw err;
             
+          
           });        
       }
 

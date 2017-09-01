@@ -27,7 +27,9 @@ m.provider('Auth', [function() {
     this.login = function(username, password) {
       return new Promise(function(success, fail) {
         if (password.trim() == "") {
-          fail(AuthError.NoPassword)
+          fail({
+            data : AuthError.NoPassword
+          })
         } else {
           $http({
             method:"POST",
