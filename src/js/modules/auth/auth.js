@@ -46,6 +46,11 @@ m.provider('Auth', [function() {
       });
     }
 
+
+    this.logout = function() {
+      $cookies.remove(COOKIE_KEY);
+    }
+
     // Promise AuthError UserSession
     this.checkAndCacheSession = function() {
       return new Promise(function(success, fail) {

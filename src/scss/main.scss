@@ -1,13 +1,34 @@
 @import 'bootstrap/bootstrap.min.scss';
+@import 'font-awesome/scss/font-awesome';
 @import 'variables.scss';
+@import 'mixins.scss';
 @import 'reset.scss';
 @import 'utility.scss';
-@import 'mixins.scss';
+@import 'flyout.scss';
+
 
 body {
   background:#fff;
   font-family:$text-sans-serif;
 }
+
+#wrapper {
+  @include mobile {
+    margin:0 auto;
+    width: 100%;
+  }
+  @include desktop {
+    position:absolute;
+    top:0;
+    left:$flyoutWidth;
+    width:calc(100% - #{$flyoutWidth});
+  }
+
+  .container {
+    width:100%;
+  }
+}
+
 
 .app-login-form {
   $form-background: #f4f4f4;

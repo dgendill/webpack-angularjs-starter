@@ -49,7 +49,7 @@ export default angular
     $stateProvider.state({
       name: 'root.home',
       url: '/home',
-      template: 'Home'
+      template: require('Templates/home.html')
     });
 
     $stateProvider.state({

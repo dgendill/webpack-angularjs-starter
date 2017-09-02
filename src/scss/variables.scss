@@ -1,4 +1,5 @@
 $base-font-size: 22px;
+$flyoutWidth: 300px;
 
 $c1: #b1ccac;
 
@@ -22,15 +23,3 @@ $lrspacing: 15px;
 $mobile-width: 560px;
 $desktop-width: 561px;
 $max-width-desktop: 800px;
-
-@mixin mobile {
-  @media all and (min-width: #{$mobile-width}) and (max-width: #{$desktop-width - 1px}) {
-    @content;
-  }
-}
-
-@mixin desktop {
-  @media all and (min-width: #{$desktop-width}) {
-    @content;
-  }
-}

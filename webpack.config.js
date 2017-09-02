@@ -26,7 +26,11 @@ const frontend = {
       {
         from : 'src/index.html',
         to : '../dist/index.html'
-      }
+      },
+      {
+        from : 'src/scss/font-awesome/fonts',
+        to : '../dist/css/font-awesome/fonts'
+      },
     ])
   ],
   resolve: {

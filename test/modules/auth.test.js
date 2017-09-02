@@ -91,12 +91,10 @@ describe('appAuth module', function () {
 
     it('with credentials', intTimeTest(10000, function (done) {
       
-      console.log('d', done);
       var defer = $q.defer();
       controller.username = "demo";
       controller.password = "demo";
-      console.log(controller);
-
+      
       controller.login().then(function(r) {
         expect(true).to.be.true;
         done();
@@ -106,8 +104,7 @@ describe('appAuth module', function () {
         done();
       });
     
-  }));	
-    
+    }));	    
     
 	});
 
